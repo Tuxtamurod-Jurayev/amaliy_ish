@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+.env.local
+.vercel
+*.log
+coverage
+.DS_Store
+frontend/node_modules
+frontend/dist
+frontend/vite.log
+frontend/vite.err
+*.tsbuildinfo
