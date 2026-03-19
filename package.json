@@ -3,7 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "db:apply": "node database/apply.mjs"
+    "db:apply": "node database/apply.mjs",
+    "frontend:install": "npm install --prefix frontend",
+    "frontend:dev": "npm run dev --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend",
+    "vercel-build": "npm run frontend:install && npm run frontend:build"
   },
   "dependencies": {
     "pg": "^8.13.3"

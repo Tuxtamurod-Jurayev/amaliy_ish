@@ -13,11 +13,11 @@ Supabase asosidagi universitet amaliy topshiriqlar tizimi.
 ## Lokal ishga tushirish
 
 1. Root papkada `npm install`
-2. `frontend` papkada `npm install`
+2. `npm run frontend:install`
 3. `frontend/.env` ichida `VITE_SUPABASE_URL` va `VITE_SUPABASE_ANON_KEY` bo'lishi kerak
 4. Root `.env` ichida `DATABASE_URL` bo'lishi kerak
 5. Schema apply: `npm run db:apply`
-6. Frontend run: `cd frontend` va `npm run dev`
+6. Frontend run: `npm run frontend:dev`
 
 ## Admin login
 
@@ -34,7 +34,20 @@ Supabase asosidagi universitet amaliy topshiriqlar tizimi.
 ## Deploy
 
 - GitHub repository tayyorlanadi
-- Frontend Vercel uchun tayyor
+- Vercel uchun root papkadan deploy qilinadi
+- `vercel.json` root build script va SPA rewrite sozlamalarini o'z ichiga oladi
 - Environment variables:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
+
+## Vercel
+
+1. Vercel'da repository'ni ulang
+2. Root Directory sifatida repo ildizini qoldiring
+3. Quyidagi env variable'larni qo'shing:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4. Build command avtomatik `npm run vercel-build` bo'ladi
+5. Deploy qiling
+
+Ichki route'lar uchun `404` chiqmasligi uchun rewrite allaqachon yoqilgan.

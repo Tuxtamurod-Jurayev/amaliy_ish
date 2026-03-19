@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react";
-import Editor from "@monaco-editor/react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { FileUp, Send } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { PageHeader } from "@/components/PageHeader";
@@ -8,6 +7,8 @@ import { appService } from "@/services/appService";
 import { useAppStore } from "@/store/useAppStore";
 import { formatDate, relativeDeadline } from "@/utils/format";
 import type { ProgrammingLanguage } from "@/types/domain";
+
+const MonacoEditor = lazy(() => import("@monaco-editor/react"));
 
 const starterByLanguage = {
   javascript: `function solve(input) {\n  const [a, b] = input.split(" ").map(Number);\n  return a + b;\n}`,
@@ -182,14 +183,16 @@ export function StudentAssignmentsPage() {
               </div>
             </div>
             <div className="overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800">
-              <Editor
-                height="min(58vh,420px)"
-                theme="vs-dark"
-                language={selectedLanguage === "csharp" ? "csharp" : selectedLanguage}
-                value={code}
-                onChange={(value) => setCode(value ?? "")}
-                options={{ minimap: { enabled: false }, fontSize: 14, roundedSelection: true }}
-              />
+              <Suspense fallback={<div className="flex min-h-[320px] items-center justify-center bg-slate-50 text-sm text-slate-500 dark:bg-slate-950">Editor yuklanmoqda...</div>}>
+                <MonacoEditor
+                  height="min(58vh,420px)"
+                  theme="vs-dark"
+                  language={selectedLanguage === "csharp" ? "csharp" : selectedLanguage}
+                  value={code}
+                  onChange={(value) => setCode(value ?? "")}
+                  options={{ minimap: { enabled: false }, fontSize: 14, roundedSelection: true }}
+                />
+              </Suspense>
             </div>
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
               <button type="button" onClick={() => setSelectedId(null)} className="button-secondary w-full sm:w-auto">Bekor qilish</button>
