@@ -1,6 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { appService } from "@/services/appService";
+import { supabaseEnv } from "@/services/supabase/client";
 import { useAppStore } from "@/store/useAppStore";
 
 export function LoginPage() {
@@ -41,6 +42,12 @@ export function LoginPage() {
   return (
     <div className="panel mx-auto w-full max-w-md">
       <h2 className="font-display text-3xl font-semibold sm:text-4xl">Tizimga kirish</h2>
+      {!supabaseEnv.configured ? (
+        <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100">
+          Supabase ulanmagan. Vercel env variable'larida `VITE_SUPABASE_URL` va `VITE_SUPABASE_ANON_KEY`
+          yoki `SUPABASE_URL` va `SUPABASE_ANON_KEY` ni kiriting.
+        </div>
+      ) : null}
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
@@ -56,7 +63,7 @@ export function LoginPage() {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
-        <button type="submit" disabled={loading} className="button-primary w-full">
+        <button type="submit" disabled={loading || !supabaseEnv.configured} className="button-primary w-full disabled:cursor-not-allowed disabled:opacity-60">
           {loading ? "Kirish..." : "Kirish"}
         </button>
       </form>

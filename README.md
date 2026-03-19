@@ -39,6 +39,8 @@ Supabase asosidagi universitet amaliy topshiriqlar tizimi.
 - Environment variables:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_ANON_KEY`
+  - yoki `SUPABASE_URL`
+  - yoki `SUPABASE_ANON_KEY`
 
 ## Vercel
 
@@ -47,6 +49,8 @@ Supabase asosidagi universitet amaliy topshiriqlar tizimi.
 3. Quyidagi env variable'larni qo'shing:
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
+   - yoki `SUPABASE_URL`
+   - yoki `SUPABASE_ANON_KEY`
 4. Build command avtomatik `npm run vercel-build` bo'ladi
 5. Deploy qiling
 

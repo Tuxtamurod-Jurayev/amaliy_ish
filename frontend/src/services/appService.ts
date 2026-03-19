@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { supabase } from "@/services/supabase/client";
+import { supabase, supabaseEnv } from "@/services/supabase/client";
 import type {
   Assignment,
   AssignmentCoverage,
@@ -20,8 +20,8 @@ import type {
 import { generatePassword, slugify } from "@/utils/format";
 
 function ensureEnv() {
-  if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
-    throw new Error("Supabase environment variables topilmadi");
+  if (!supabaseEnv.configured) {
+    throw new Error("Supabase sozlanmagan. Vercel env variable'larida VITE_SUPABASE_URL va VITE_SUPABASE_ANON_KEY yoki SUPABASE_URL va SUPABASE_ANON_KEY ni kiriting.");
   }
 }
 
@@ -435,6 +435,7 @@ export const appService = {
   },
 
   async getTeachers(): Promise<TeacherView[]> {
+    ensureEnv();
     const { data, error } = await supabase.from("teachers").select("*").order("created_at", { ascending: true });
     failIfError(error);
     const teacherMap = await buildTeacherMap(data ?? []);
@@ -442,6 +443,7 @@ export const appService = {
   },
 
   async createTeacher(input: { name: string; email: string; login: string; password: string; department?: string }) {
+    ensureEnv();
     const user = await createUser({
       role: "teacher",
       name: input.name,
@@ -461,6 +463,7 @@ export const appService = {
     teacherId: string,
     input: { name: string; email: string; login: string; password: string; department?: string },
   ) {
+    ensureEnv();
     const { data: teacher, error: teacherError } = await supabase
       .from("teachers")
       .select("*")
@@ -498,6 +501,7 @@ export const appService = {
   },
 
   async deleteTeacher(teacherId: string) {
+    ensureEnv();
     const { count, error: subjectError } = await supabase
       .from("subjects")
       .select("*", { count: "exact", head: true })
@@ -524,6 +528,7 @@ export const appService = {
   },
 
   async getSubjects() {
+    ensureEnv();
     const [subjectResult, teacherResult] = await Promise.all([
       supabase.from("subjects").select("*").order("created_at", { ascending: true }),
       supabase.from("teachers").select("*"),
@@ -538,6 +543,7 @@ export const appService = {
   },
 
   async createSubject(input: { name: string; teacherId: string; type: "programming" | "file" }) {
+    ensureEnv();
     const { error } = await supabase.from("subjects").insert({
       name: input.name,
       teacher_id: input.teacherId,
@@ -547,6 +553,7 @@ export const appService = {
   },
 
   async updateSubject(subjectId: string, input: { name: string; teacherId: string; type: "programming" | "file" }) {
+    ensureEnv();
     const { error } = await supabase
       .from("subjects")
       .update({
@@ -559,6 +566,7 @@ export const appService = {
   },
 
   async getTeacherDashboard(userId: string) {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     return {
       totalStudents: context.students.length,
@@ -600,6 +608,7 @@ export const appService = {
   },
 
   async getStudentsForTeacher(userId: string) {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     const subjectMap = new Map(context.subjects.map((subject) => [subject.id, subject]));
     return context.students.map((student) => ({
@@ -612,6 +621,7 @@ export const appService = {
     userId: string,
     input: { name: string; groupName: string; studentCode: string; subjectIds: string[] },
   ) {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     input.subjectIds.forEach((subjectId) => {
       if (!context.subjects.some((subject) => subject.id === subjectId)) {
@@ -671,6 +681,7 @@ export const appService = {
   },
 
   async importStudents(userId: string, rows: StudentImportRow[], subjectIds: string[]) {
+    ensureEnv();
     const credentials: GeneratedStudentCredentials[] = [];
     for (const row of rows) {
       if (!row.name || !row.group || !row.student_id) continue;
@@ -686,6 +697,7 @@ export const appService = {
   },
 
   async getTeacherAssignments(userId: string): Promise<AssignmentView[]> {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     const subjectMap = new Map(context.subjects.map((subject) => [subject.id, subject]));
     return context.assignments.map((assignment) => ({
@@ -710,6 +722,7 @@ export const appService = {
       expectedOutput?: string;
     },
   ) {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     if (!context.subjects.some((subject) => subject.id === input.subjectId)) {
       throw new Error("Faqat o'zingizning faningizga topshiriq biriktira olasiz");
@@ -749,6 +762,7 @@ export const appService = {
   },
 
   async getTeacherSubmissions(userId: string) {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     const subjectMap = new Map(context.subjects.map((subject) => [subject.id, subject]));
     const assignmentMap = new Map(
@@ -776,6 +790,7 @@ export const appService = {
     submissionId: string,
     input: { status: "accepted" | "rejected"; comment?: string },
   ) {
+    ensureEnv();
     await loadTeacherContext(userId);
     const { error } = await supabase
       .from("submissions")
@@ -789,6 +804,7 @@ export const appService = {
   },
 
   async getAssignmentCoverage(userId: string): Promise<AssignmentCoverage[]> {
+    ensureEnv();
     const context = await loadTeacherContext(userId);
     return context.assignments.flatMap((assignment) => {
       const targetedStudents = context.students.filter((student) =>
@@ -809,6 +825,7 @@ export const appService = {
   },
 
   async getStudentDashboard(userId: string) {
+    ensureEnv();
     const context = await loadStudentContext(userId);
     return {
       student: context.student,
@@ -833,6 +850,7 @@ export const appService = {
     code: string,
     language: ProgrammingLanguage,
   ) {
+    ensureEnv();
     const context = await loadStudentContext(userId);
     const assignment = context.assignments.find((item) => item.id === assignmentId);
     if (!assignment || assignment.type !== "programming") {
@@ -869,6 +887,7 @@ export const appService = {
   },
 
   async submitFile(userId: string, assignmentId: string, file: File) {
+    ensureEnv();
     const context = await loadStudentContext(userId);
     const assignment = context.assignments.find((item) => item.id === assignmentId);
     if (!assignment || assignment.type !== "file") {
@@ -903,6 +922,7 @@ export const appService = {
   },
 
   async parseImportFile(file: File): Promise<StudentImportRow[]> {
+    ensureEnv();
     const buffer = await file.arrayBuffer();
     const workbook = XLSX.read(buffer, { type: "array" });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
