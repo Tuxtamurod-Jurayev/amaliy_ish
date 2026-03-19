@@ -33,6 +33,7 @@ VITE_SUPABASE_ANON_KEY=your-publishable-key
 - Frontend endi root `.env` ni ham o'qiydi
 - `npm run db:apply` shell env bo'lmasa ham root `.env` dagi `DATABASE_URL` ni ishlatadi
 - `frontend/.env` faqat alohida override kerak bo'lsa ishlatiladi
+- Agar Supabase schema hali yaratilmagan bo'lsa, ilova avtomatik local fallback rejimda ishlaydi
 
 ## Admin login
 

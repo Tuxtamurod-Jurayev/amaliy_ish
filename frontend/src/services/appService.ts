@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import { localAppService } from "@/services/local/localService";
 import { supabase, supabaseEnv } from "@/services/supabase/client";
 import type {
   Assignment,
@@ -405,7 +406,7 @@ async function createUser(input: {
   return data;
 }
 
-export const appService = {
+const remoteAppService = {
   async login(login: string, password: string): Promise<AuthSession> {
     ensureEnv();
     const user = await getUserByLoginPassword(login, password);
@@ -936,4 +937,126 @@ export const appService = {
       student_id: String(row.student_id ?? row.studentId ?? "").trim(),
     }));
   },
+};
+
+function shouldUseLocalFallback(error: unknown) {
+  if (!(error instanceof Error)) return false;
+  const message = error.message.toLowerCase();
+  return (
+    message.includes("public.users") ||
+    message.includes("schema cache") ||
+    message.includes("does not exist") ||
+    message.includes("relation") ||
+    message.includes("failed to fetch") ||
+    message.includes("networkerror") ||
+    message.includes("fetch failed")
+  );
+}
+
+async function runWithFallback<T>(remote: () => Promise<T>, local: () => Promise<T>) {
+  try {
+    return await remote();
+  } catch (error) {
+    if (shouldUseLocalFallback(error)) {
+      return local();
+    }
+    throw error;
+  }
+}
+
+export const appService = {
+  login: (login: string, password: string) =>
+    runWithFallback(() => remoteAppService.login(login, password), () => localAppService.login(login, password)),
+
+  getAdminStats: () =>
+    runWithFallback(() => remoteAppService.getAdminStats(), () => localAppService.getAdminStats()),
+
+  getTeachers: () =>
+    runWithFallback(() => remoteAppService.getTeachers(), () => localAppService.getTeachers()),
+
+  createTeacher: (input: { name: string; email: string; login: string; password: string; department?: string }) =>
+    runWithFallback(() => remoteAppService.createTeacher(input), () => localAppService.createTeacher(input)),
+
+  updateTeacher: (
+    teacherId: string,
+    input: { name: string; email: string; login: string; password: string; department?: string },
+  ) =>
+    runWithFallback(() => remoteAppService.updateTeacher(teacherId, input), () => localAppService.updateTeacher(teacherId, input)),
+
+  deleteTeacher: (teacherId: string) =>
+    runWithFallback(() => remoteAppService.deleteTeacher(teacherId), () => localAppService.deleteTeacher(teacherId)),
+
+  getSubjects: () =>
+    runWithFallback(() => remoteAppService.getSubjects(), () => localAppService.getSubjects()),
+
+  createSubject: (input: { name: string; teacherId: string; type: "programming" | "file" }) =>
+    runWithFallback(() => remoteAppService.createSubject(input), () => localAppService.createSubject(input)),
+
+  updateSubject: (subjectId: string, input: { name: string; teacherId: string; type: "programming" | "file" }) =>
+    runWithFallback(() => remoteAppService.updateSubject(subjectId, input), () => localAppService.updateSubject(subjectId, input)),
+
+  getTeacherDashboard: (userId: string) =>
+    runWithFallback(() => remoteAppService.getTeacherDashboard(userId), () => localAppService.getTeacherDashboard(userId)),
+
+  getStudentsForTeacher: (userId: string) =>
+    runWithFallback(() => remoteAppService.getStudentsForTeacher(userId), () => localAppService.getStudentsForTeacher(userId)),
+
+  createStudent: (
+    userId: string,
+    input: { name: string; groupName: string; studentCode: string; subjectIds: string[] },
+  ) =>
+    runWithFallback(() => remoteAppService.createStudent(userId, input), () => localAppService.createStudent(userId, input)),
+
+  importStudents: (userId: string, rows: StudentImportRow[], subjectIds: string[]) =>
+    runWithFallback(() => remoteAppService.importStudents(userId, rows, subjectIds), () => localAppService.importStudents(userId, rows, subjectIds)),
+
+  getTeacherAssignments: (userId: string) =>
+    runWithFallback(() => remoteAppService.getTeacherAssignments(userId), () => localAppService.getTeacherAssignments(userId)),
+
+  createAssignment: (
+    userId: string,
+    input: {
+      title: string;
+      description: string;
+      subjectId: string;
+      type: "programming" | "file";
+      deadline: string;
+      language?: "cpp" | "csharp" | "python" | "javascript";
+      assignToAll: boolean;
+      targetStudentIds: string[];
+      testInput?: string;
+      expectedOutput?: string;
+    },
+  ) =>
+    runWithFallback(() => remoteAppService.createAssignment(userId, input), () => localAppService.createAssignment(userId, input)),
+
+  getTeacherSubmissions: (userId: string) =>
+    runWithFallback(() => remoteAppService.getTeacherSubmissions(userId), () => localAppService.getTeacherSubmissions(userId)),
+
+  reviewSubmission: (
+    userId: string,
+    submissionId: string,
+    input: { status: "accepted" | "rejected"; comment?: string },
+  ) =>
+    runWithFallback(() => remoteAppService.reviewSubmission(userId, submissionId, input), () => localAppService.reviewSubmission(userId, submissionId, input)),
+
+  getAssignmentCoverage: (userId: string) =>
+    runWithFallback(() => remoteAppService.getAssignmentCoverage(userId), () => localAppService.getAssignmentCoverage(userId)),
+
+  getStudentDashboard: (userId: string) =>
+    runWithFallback(() => remoteAppService.getStudentDashboard(userId), () => localAppService.getStudentDashboard(userId)),
+
+  getStudentAssignments: (userId: string) =>
+    runWithFallback(() => remoteAppService.getStudentAssignments(userId), () => localAppService.getStudentAssignments(userId)),
+
+  submitProgramming: (userId: string, assignmentId: string, code: string, language: ProgrammingLanguage) =>
+    runWithFallback(
+      () => remoteAppService.submitProgramming(userId, assignmentId, code, language),
+      () => localAppService.submitProgramming(userId, assignmentId, code, language),
+    ),
+
+  submitFile: (userId: string, assignmentId: string, file: File) =>
+    runWithFallback(() => remoteAppService.submitFile(userId, assignmentId, file), () => localAppService.submitFile(userId, assignmentId, file)),
+
+  parseImportFile: (file: File) => localAppService.parseImportFile(file),
 };
