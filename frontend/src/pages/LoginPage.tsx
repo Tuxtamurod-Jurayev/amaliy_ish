@@ -5,8 +5,8 @@ import { supabaseEnv } from "@/services/supabase/client";
 import { useAppStore } from "@/store/useAppStore";
 
 export function LoginPage() {
-  const [loginValue, setLoginValue] = useState("admin");
-  const [password, setPassword] = useState("admin123");
+  const [loginValue, setLoginValue] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const login = useAppStore((state) => state.login);
   const pushToast = useAppStore((state) => state.pushToast);
