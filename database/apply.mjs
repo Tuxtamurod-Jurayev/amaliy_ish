@@ -1,10 +1,27 @@
 import { readFile } from "node:fs/promises";
 import { Client } from "pg";
 
-const connectionString = process.env.DATABASE_URL;
+async function readDatabaseUrlFromEnvFile() {
+  try {
+    const envText = await readFile(new URL("../.env", import.meta.url), "utf8");
+    const line = envText
+      .split(/\r?\n/)
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("DATABASE_URL="));
+
+    if (!line) return "";
+
+    const value = line.slice("DATABASE_URL=".length).trim();
+    return value.replace(/^['"]|['"]$/g, "");
+  } catch {
+    return "";
+  }
+}
+
+const connectionString = process.env.DATABASE_URL || (await readDatabaseUrlFromEnvFile());
 
 if (!connectionString) {
-  console.error("DATABASE_URL environment variable topilmadi.");
+  console.error("DATABASE_URL topilmadi. Root .env faylga yoki shell environment'ga qo'shing.");
   process.exit(1);
 }
 

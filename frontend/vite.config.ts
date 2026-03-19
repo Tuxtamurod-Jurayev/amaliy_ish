@@ -3,7 +3,10 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, __dirname, "");
+  const rootDir = path.resolve(__dirname, "..");
+  const rootEnv = loadEnv(mode, rootDir, "");
+  const frontendEnv = loadEnv(mode, __dirname, "");
+  const env = { ...rootEnv, ...frontendEnv };
   const supabaseUrl = env.VITE_SUPABASE_URL || env.SUPABASE_URL || "";
   const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY || "";
 
