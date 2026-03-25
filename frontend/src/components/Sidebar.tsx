@@ -38,8 +38,9 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
   return (
     <aside className={cn("panel flex h-full flex-col justify-between overflow-hidden p-4", className)}>
       <div className="space-y-6">
-        <Link to="/" className="block rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
+        <Link to="/" className="block rounded-3xl border p-4" style={{ borderColor: "var(--border)" }}>
           <p className="font-display text-2xl font-semibold">Oraliq Hub</p>
+          <p className="mt-1 text-xs muted-copy">University practical workspace</p>
         </Link>
 
         <nav className="space-y-2">
@@ -53,10 +54,8 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
                 end={item.to === "/app/admin" || item.to === "/app/teacher" || item.to === "/app/student"}
                 className={({ isActive }) =>
                   cn(
-                    "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition",
-                    isActive
-                      ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950"
-                      : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/80",
+                    "nav-item",
+                    isActive && "nav-item-active",
                   )
                 }
               >
@@ -69,9 +68,9 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
       </div>
 
       <div className="space-y-3">
-        <div className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-800">
+        <div className="rounded-2xl border px-4 py-3" style={{ borderColor: "var(--border)" }}>
           <p className="text-sm font-semibold">{session.user.name}</p>
-          <p className="text-xs text-slate-500">{session.user.role}</p>
+          <p className="text-xs muted-copy">{session.user.role}</p>
         </div>
         <button type="button" onClick={() => { logout(); onNavigate?.(); }} className="button-secondary w-full gap-2">
           <LogOut size={16} />

@@ -9,11 +9,11 @@ export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white p-3 sm:p-4 dark:bg-slate-950">
-      <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-7xl gap-4 lg:min-h-[calc(100vh-2rem)] lg:grid-cols-[280px_minmax(0,1fr)]">
+    <div className="min-h-screen p-2 sm:p-4">
+      <div className="mx-auto grid min-h-[calc(100vh-1rem)] max-w-7xl gap-3 lg:min-h-[calc(100vh-2rem)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-4">
         <Sidebar className="hidden lg:flex" />
         <div className="space-y-4">
-          <div className="panel flex items-center justify-between gap-3">
+          <div className="panel flex items-center justify-between gap-3 px-3 py-3 sm:px-4">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
@@ -31,8 +31,8 @@ export function DashboardLayout() {
         </div>
       </div>
       {mobileMenuOpen ? (
-        <div className="fixed inset-0 z-40 bg-slate-950/50 lg:hidden">
-          <div className="absolute inset-y-0 left-0 w-[86vw] max-w-sm p-3">
+        <div className="fixed inset-0 z-40 bg-slate-950/55 backdrop-blur-sm lg:hidden">
+          <div className="absolute inset-y-0 left-0 w-[88vw] max-w-sm p-2 sm:p-3">
             <Sidebar
               className="h-full"
               onNavigate={() => setMobileMenuOpen(false)}
@@ -41,7 +41,8 @@ export function DashboardLayout() {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(false)}
-            className="absolute right-4 top-4 rounded-full bg-white/90 p-3 text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+            className="absolute right-3 top-3 rounded-full p-3 shadow-soft"
+            style={{ background: "var(--surface-strong)", color: "var(--text)" }}
           >
             <X size={18} />
           </button>

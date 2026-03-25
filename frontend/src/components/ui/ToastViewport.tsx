@@ -4,9 +4,9 @@ import { useAppStore } from "@/store/useAppStore";
 import { cn } from "@/utils/cn";
 
 const toneClass = {
-  success: "border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-100",
-  error: "border-rose-200 bg-rose-50 text-rose-900 dark:border-rose-900 dark:bg-rose-950/70 dark:text-rose-100",
-  info: "border-slate-200 bg-white text-slate-900 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100",
+  success: "border-emerald-200/90 bg-emerald-50/95 text-emerald-950 dark:border-emerald-900/90 dark:bg-emerald-950/80 dark:text-emerald-100",
+  error: "border-rose-200/90 bg-rose-50/95 text-rose-950 dark:border-rose-900/90 dark:bg-rose-950/80 dark:text-rose-100",
+  info: "",
 };
 
 const icons = {
@@ -27,7 +27,7 @@ export function ToastViewport() {
   }, [dismissToast, toasts]);
 
   return (
-    <div className="fixed right-4 top-4 z-50 space-y-3">
+    <div className="fixed inset-x-3 top-3 z-50 space-y-3 sm:left-auto sm:right-4 sm:top-4 sm:w-80">
       {toasts.map((toast) => {
         const tone = toast.tone ?? "info";
         const Icon = icons[tone];
@@ -36,9 +36,18 @@ export function ToastViewport() {
           <div
             key={toast.id}
             className={cn(
-              "w-80 rounded-2xl border px-4 py-3 shadow-soft backdrop-blur",
+              "rounded-3xl border px-4 py-3 shadow-soft backdrop-blur",
               toneClass[tone],
             )}
+            style={
+              tone === "info"
+                ? {
+                    borderColor: "var(--border)",
+                    background: "color-mix(in srgb, var(--surface-strong) 92%, transparent)",
+                    color: "var(--text)",
+                  }
+                : undefined
+            }
           >
             <div className="flex gap-3">
               <Icon className="mt-0.5 shrink-0" size={18} />
