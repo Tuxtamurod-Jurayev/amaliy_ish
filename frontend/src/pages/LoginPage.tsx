@@ -1,5 +1,4 @@
 import { FormEvent, useState } from "react";
-import { useI18n } from "@/hooks/useI18n";
 import { useLocation, useNavigate } from "react-router-dom";
 import { appService } from "@/services/appService";
 import { supabaseEnv } from "@/services/supabase/client";
@@ -13,7 +12,6 @@ export function LoginPage() {
   const pushToast = useAppStore((state) => state.pushToast);
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useI18n();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -43,7 +41,7 @@ export function LoginPage() {
 
   return (
     <div className="panel mx-auto w-full max-w-md">
-      <h2 className="font-display text-3xl font-semibold sm:text-4xl">{t("login_title")}</h2>
+      <h2 className="font-display text-3xl font-semibold sm:text-4xl">Tizimga kirish</h2>
       {!supabaseEnv.configured ? (
         <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100">
           Supabase ulanmagan. Vercel env variable'larida `VITE_SUPABASE_URL` va `VITE_SUPABASE_ANON_KEY`
@@ -53,11 +51,11 @@ export function LoginPage() {
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-4">
         <div>
-          <label className="mb-2 block text-sm font-medium">{t("login_login")}</label>
+          <label className="mb-2 block text-sm font-medium">Login</label>
           <input className="input" value={loginValue} onChange={(event) => setLoginValue(event.target.value)} />
         </div>
         <div>
-          <label className="mb-2 block text-sm font-medium">{t("login_password")}</label>
+          <label className="mb-2 block text-sm font-medium">Parol</label>
           <input
             className="input"
             type="password"
@@ -66,7 +64,7 @@ export function LoginPage() {
           />
         </div>
         <button type="submit" disabled={loading || !supabaseEnv.configured} className="button-primary w-full disabled:cursor-not-allowed disabled:opacity-60">
-          {loading ? t("login_loading") : t("login_submit")}
+          {loading ? "Kirish..." : "Kirish"}
         </button>
       </form>
     </div>

@@ -1,28 +1,24 @@
 import { Link, NavLink } from "react-router-dom";
-import { BookOpenCheck, ClipboardList, FolderOpenDot, GraduationCap, LayoutDashboard, LogOut, MonitorPlay, Users, type LucideIcon } from "lucide-react";
-import { useI18n } from "@/hooks/useI18n";
-import type { MessageKey } from "@/i18n/messages";
+import { BookOpenCheck, ClipboardList, FolderOpenDot, GraduationCap, LayoutDashboard, LogOut, Users, type LucideIcon } from "lucide-react";
 import { useAppStore } from "@/store/useAppStore";
 import type { UserRole } from "@/types/domain";
 import { cn } from "@/utils/cn";
 
-const navByRole: Record<UserRole, { to: string; labelKey: MessageKey; icon: LucideIcon }[]> = {
+const navByRole: Record<UserRole, { to: string; label: string; icon: LucideIcon }[]> = {
   admin: [
-    { to: "/app/admin", labelKey: "common_dashboard", icon: LayoutDashboard },
-    { to: "/app/admin/teachers", labelKey: "common_teachers", icon: Users },
-    { to: "/app/admin/subjects", labelKey: "common_subjects", icon: BookOpenCheck },
-    { to: "/app/admin/courses", labelKey: "common_courses", icon: MonitorPlay },
+    { to: "/app/admin", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/app/admin/teachers", label: "Teachers", icon: Users },
+    { to: "/app/admin/subjects", label: "Subjects", icon: BookOpenCheck },
   ],
   teacher: [
-    { to: "/app/teacher", labelKey: "common_dashboard", icon: LayoutDashboard },
-    { to: "/app/teacher/students", labelKey: "common_students", icon: GraduationCap },
-    { to: "/app/teacher/assignments", labelKey: "common_assignments", icon: ClipboardList },
-    { to: "/app/teacher/submissions", labelKey: "common_submissions", icon: FolderOpenDot },
+    { to: "/app/teacher", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/app/teacher/students", label: "Students", icon: GraduationCap },
+    { to: "/app/teacher/assignments", label: "Assignments", icon: ClipboardList },
+    { to: "/app/teacher/submissions", label: "Submissions", icon: FolderOpenDot },
   ],
   student: [
-    { to: "/app/student", labelKey: "common_dashboard", icon: LayoutDashboard },
-    { to: "/app/student/assignments", labelKey: "common_assignments", icon: ClipboardList },
-    { to: "/app/student/courses", labelKey: "common_courses", icon: MonitorPlay },
+    { to: "/app/student", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/app/student/assignments", label: "Assignments", icon: ClipboardList },
   ],
 };
 
@@ -34,7 +30,6 @@ interface SidebarProps {
 export function Sidebar({ className, onNavigate }: SidebarProps) {
   const session = useAppStore((state) => state.session);
   const logout = useAppStore((state) => state.logout);
-  const { t } = useI18n();
 
   if (!session) return null;
 
@@ -44,7 +39,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
     <aside className={cn("panel flex h-full flex-col justify-between overflow-hidden p-4", className)}>
       <div className="space-y-6">
         <Link to="/" className="block rounded-2xl border border-slate-200 p-4 dark:border-slate-800">
-          <p className="font-display text-2xl font-semibold">{t("brand")}</p>
+          <p className="font-display text-2xl font-semibold">Oraliq Hub</p>
         </Link>
 
         <nav className="space-y-2">
@@ -66,7 +61,7 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
                 }
               >
                 <Icon size={18} />
-                {t(item.labelKey)}
+                {item.label}
               </NavLink>
             );
           })}
@@ -76,11 +71,11 @@ export function Sidebar({ className, onNavigate }: SidebarProps) {
       <div className="space-y-3">
         <div className="rounded-xl border border-slate-200 px-4 py-3 dark:border-slate-800">
           <p className="text-sm font-semibold">{session.user.name}</p>
-          <p className="text-xs text-slate-500">{t(`role_${session.user.role}`)}</p>
+          <p className="text-xs text-slate-500">{session.user.role}</p>
         </div>
         <button type="button" onClick={() => { logout(); onNavigate?.(); }} className="button-secondary w-full gap-2">
           <LogOut size={16} />
-          {t("common_logout")}
+          Chiqish
         </button>
       </div>
     </aside>

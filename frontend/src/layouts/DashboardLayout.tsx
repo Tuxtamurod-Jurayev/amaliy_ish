@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Outlet } from "react-router-dom";
-import { LanguageToggle } from "@/components/LanguageToggle";
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ToastViewport } from "@/components/ui/ToastViewport";
@@ -10,11 +9,11 @@ export function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 p-2 sm:p-4 dark:bg-slate-950">
-      <div className="mx-auto grid min-h-[calc(100vh-1rem)] max-w-7xl gap-3 lg:min-h-[calc(100vh-2rem)] lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-4">
+    <div className="min-h-screen bg-white p-3 sm:p-4 dark:bg-slate-950">
+      <div className="mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-7xl gap-4 lg:min-h-[calc(100vh-2rem)] lg:grid-cols-[280px_minmax(0,1fr)]">
         <Sidebar className="hidden lg:flex" />
         <div className="space-y-4">
-          <div className="panel flex flex-wrap items-center justify-between gap-3">
+          <div className="panel flex items-center justify-between gap-3">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
@@ -22,8 +21,7 @@ export function DashboardLayout() {
             >
               <Menu size={18} />
             </button>
-            <div className="ml-auto flex flex-wrap items-center gap-2">
-              <LanguageToggle />
+            <div className="ml-auto">
               <ThemeToggle />
             </div>
           </div>

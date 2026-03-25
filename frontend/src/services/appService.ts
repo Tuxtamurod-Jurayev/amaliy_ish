@@ -1,5 +1,4 @@
 import * as XLSX from "xlsx";
-import { courseLocalService } from "@/services/local/courseLocalService";
 import { localAppService } from "@/services/local/localService";
 import { supabase, supabaseEnv } from "@/services/supabase/client";
 import type {
@@ -1060,31 +1059,4 @@ export const appService = {
     runWithFallback(() => remoteAppService.submitFile(userId, assignmentId, file), () => localAppService.submitFile(userId, assignmentId, file)),
 
   parseImportFile: (file: File) => localAppService.parseImportFile(file),
-
-  getAdminCourses: () => courseLocalService.getAdminCourses(),
-
-  createCourse: (input: Parameters<typeof courseLocalService.createCourse>[0]) =>
-    courseLocalService.createCourse(input),
-
-  updateCourse: (courseId: string, input: Parameters<typeof courseLocalService.updateCourse>[1]) =>
-    courseLocalService.updateCourse(courseId, input),
-
-  getStudentCourses: (userId: string) => courseLocalService.getStudentCourses(userId),
-
-  getStudentCourse: (userId: string, courseId: string) =>
-    courseLocalService.getStudentCourse(userId, courseId),
-
-  updateLessonWatch: (
-    userId: string,
-    courseId: string,
-    lessonId: string,
-    watchedSeconds: number,
-    completedVideo: boolean,
-  ) => courseLocalService.updateLessonWatch(userId, courseId, lessonId, watchedSeconds, completedVideo),
-
-  submitLessonMedia: (userId: string, courseId: string, lessonId: string, file: File) =>
-    courseLocalService.submitLessonMedia(userId, courseId, lessonId, file),
-
-  submitLessonPuzzle: (userId: string, courseId: string, lessonId: string, code: string) =>
-    courseLocalService.submitLessonPuzzle(userId, courseId, lessonId, code),
 };
