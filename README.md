@@ -2,6 +2,16 @@
 
 Supabase asosidagi universitet amaliy topshiriqlar tizimi.
 
+## Yangi imkoniyatlar
+
+- Uzbek / English / Russian til almashtirgich
+- Admin uchun video darsli kurslar
+- Har bir video darsdan keyin majburiy topshiriq
+- Matematika uchun rasm yuklash
+- Ingliz tili uchun audio yuklash
+- Dasturlash uchun code puzzle
+- Video to'liq ko'rilmaguncha keyingi dars ochilmaydi
+
 ## Stack
 
 - React

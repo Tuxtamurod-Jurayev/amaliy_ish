@@ -6,8 +6,11 @@ import { LoginPage } from "@/pages/LoginPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminDashboardPage } from "@/admin/AdminDashboardPage";
+import { AdminCoursesPage } from "@/admin/AdminCoursesPage";
 import { TeachersPage } from "@/admin/TeachersPage";
 import { SubjectsPage } from "@/admin/SubjectsPage";
+import { StudentCourseViewPage } from "@/student/StudentCourseViewPage";
+import { StudentCoursesPage } from "@/student/StudentCoursesPage";
 import { TeacherDashboardPage } from "@/teacher/TeacherDashboardPage";
 import { TeacherStudentsPage } from "@/teacher/TeacherStudentsPage";
 import { TeacherAssignmentsPage } from "@/teacher/TeacherAssignmentsPage";
@@ -46,6 +49,7 @@ export const router = createBrowserRouter([
               { index: true, element: <AdminDashboardPage /> },
               { path: "teachers", element: <TeachersPage /> },
               { path: "subjects", element: <SubjectsPage /> },
+              { path: "courses", element: <AdminCoursesPage /> },
             ],
           },
           {
@@ -64,6 +68,8 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <StudentDashboardPage /> },
               { path: "assignments", element: <StudentAssignmentsPage /> },
+              { path: "courses", element: <StudentCoursesPage /> },
+              { path: "courses/:courseId", element: <StudentCourseViewPage /> },
             ],
           },
         ],

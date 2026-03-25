@@ -34,6 +34,10 @@ function createSeedDb(): LocalDatabase {
     subjects: [],
     assignments: [],
     submissions: [],
+    courses: [],
+    courseLessons: [],
+    courseProgress: [],
+    lessonSubmissions: [],
   };
 }
 
@@ -58,6 +62,10 @@ function readDb(): LocalDatabase {
       subjects: parsed.subjects ?? [],
       assignments: parsed.assignments ?? [],
       submissions: parsed.submissions ?? [],
+      courses: parsed.courses ?? [],
+      courseLessons: parsed.courseLessons ?? [],
+      courseProgress: parsed.courseProgress ?? [],
+      lessonSubmissions: parsed.lessonSubmissions ?? [],
     };
   } catch {
     const seeded = createSeedDb();
